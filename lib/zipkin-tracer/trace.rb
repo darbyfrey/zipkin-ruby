@@ -123,7 +123,10 @@ module Trace
 
     private
     def self.make_endpoint(hostname, service_port, service_name, ip_format)
-      ep = Endpoint.new(hostname, service_port, service_name)
+      # hostname seems to be causing failures when sending spans to the zipkin server
+      # sending ip instead seems to work ¯\_(ツ)_/¯
+      ip = IPSocket.getaddress(hostname)
+      ep = Endpoint.new(ip, service_port, service_name)
       ep.ip_format = ip_format
       ep
     end
